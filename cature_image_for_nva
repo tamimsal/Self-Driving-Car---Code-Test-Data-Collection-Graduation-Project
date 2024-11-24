@@ -1,0 +1,48 @@
+import cv2
+import os
+
+def capture_unlimited_images(save_directory="uploads", image_prefix="image"):
+    # Create the directory if it doesn't exist
+    if not os.path.exists(save_directory):
+        os.makedirs(save_directory)
+
+    # Open a connection to the webcam
+    webcam = cv2.VideoCapture(0)
+    if not webcam.isOpened():
+        print("Error: Could not open webcam.")
+        return
+
+    print("Press 's' to capture an image, or 'q' to quit.")
+    image_count = 278
+
+    while True:
+        # Capture frame-by-frame
+        ret, frame = webcam.read()
+        if not ret:
+            print("Failed to capture image.")
+            break
+
+        # Display the live webcam feed
+        cv2.imshow("Webcam", frame)
+
+        # Wait for a key press
+        key = cv2.waitKey(1) & 0xFF
+
+        if key == ord('s'):  # 's' to save an image
+            # Generate a unique filename
+            image_filename = os.path.join(save_directory, f"{image_prefix}_{image_count + 1}.jpg")
+            # Save the image
+            cv2.imwrite(image_filename, frame)
+            print(f"Image saved as {image_filename}")
+            image_count += 1
+
+        elif key == ord('q'):  # 'q' to quit
+            print("Exiting.")
+            break
+
+    # Release the webcam and close OpenCV windows
+    webcam.release()
+    cv2.destroyAllWindows()
+
+# Specify parameters
+capture_unlimited_images(save_directory="uploads", image_prefix="my_image")
